@@ -66,10 +66,4 @@ A smaller supporting choice: store mutations run through a serialized promise qu
 3. **`savedAt` timestamps & notes:** record when each role was saved and let students attach short application notes or deadlines.
 4. **End-to-end browser tests:** add Playwright tests to assert full DOM rendering, keyboard focus restoration, and Undo interactions in a real browser.
 
-### Tools
 
-I used AI coding assistants (Claude and Gemini) to help scaffold the initial saved-jobs store (`lib/saved.js`), API routes (`server.js`), frontend (`public/index.html`, `public/app.js`), tests, and README draft. I then reviewed, tested, and changed the implementation to:
-- Replace the disabled `"Saved"` button with an accessible Save/Unsave toggle (`aria-pressed`) and preserve keyboard focus when lists re-render.
-- Add inline **Undo** on remove/clear, a **Clear all** action (`DELETE /api/saved`), multi-word search, **Remote only** filtering, and stipend sorting.
-- Harden the API with `Cache-Control: no-store`, `405 Method Not Allowed` responses, whitespace trimming on `jobId`, and `.tmp` cleanup on write errors.
-- Expand the suite to 32 passing tests and verify the full flow in the browser.
