@@ -83,12 +83,7 @@ function renderJobs(focusJobId = null) {
     button.setAttribute("aria-pressed", String(isSaved));
     button.textContent = isSaved ? "Saved" : "Save";
     button.title = isSaved ? "Click to remove from saved" : "Save this role";
-    button.setAttribute(
-      "aria-label",
-      isSaved
-        ? `Remove ${job.title} at ${job.company} from saved jobs`
-        : `Save ${job.title} at ${job.company}`,
-    );
+    button.setAttribute("aria-label", `Save ${job.title} at ${job.company}`);
     button.addEventListener("click", () => toggleJob(job, button));
     li.append(jobDetails(job), button);
     jobsList.append(li);
