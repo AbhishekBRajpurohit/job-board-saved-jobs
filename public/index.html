@@ -1,217 +1,309 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Job board</title>
-    <style>
-      :root {
-        --ink: #1c2530;
-        --muted: #5b6673;
-        --line: #d5dbe2;
-        --paper: #f6f8fa;
-        --card: #ffffff;
-        --accent: #0e5a6b;
-        --accent-soft: #e3f0f3;
-        --danger: #a12b2b;
-        --danger-soft: #fbecec;
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Job board</title>
+  <style>
+    :root {
+      --ink: #1c2530;
+      --muted: #5b6673;
+      --line: #d5dbe2;
+      --paper: #f6f8fa;
+      --card: #ffffff;
+      --accent: #0e5a6b;
+      --accent-soft: #e3f0f3;
+      --danger: #a12b2b;
+      --danger-soft: #fbecec;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: system-ui, sans-serif;
+      line-height: 1.45;
+      margin: 0 auto;
+      max-width: 980px;
+      padding: 16px;
+    }
+
+    h1 {
+      margin: 8px 0 12px;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin: 0;
+    }
+
+    h2:focus {
+      outline: none;
+    }
+
+    .section-head {
+      align-items: center;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .layout {
+      display: grid;
+      gap: 24px;
+    }
+
+    @media (min-width: 760px) {
+      .layout {
+        grid-template-columns: 3fr 2fr;
+        align-items: start;
       }
-      * { box-sizing: border-box; }
-      body {
-        background: var(--paper);
-        color: var(--ink);
-        font-family: system-ui, sans-serif;
-        line-height: 1.45;
-        margin: 0 auto;
-        max-width: 980px;
-        padding: 16px;
+
+      #saved-panel {
+        position: sticky;
+        top: 16px;
       }
-      h1 { margin: 8px 0 12px; }
-      h2 { font-size: 1.15rem; margin: 0; }
-      h2:focus { outline: none; }
-      .section-head {
-        align-items: center;
-        display: flex;
-        gap: 12px;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
-      .layout { display: grid; gap: 24px; }
-      @media (min-width: 760px) {
-        .layout { grid-template-columns: 3fr 2fr; align-items: start; }
-        #saved-panel { position: sticky; top: 16px; }
-      }
-      input[type="search"], select {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        color: var(--ink);
-        font: inherit;
-        padding: 8px 10px;
-      }
-      input[type="search"] {
-        font-size: 16px;
-        margin-bottom: 10px;
-        padding: 10px;
-        width: 100%;
-      }
-      .toolbar {
-        align-items: center;
-        color: var(--muted);
-        display: flex;
-        flex-wrap: wrap;
-        font-size: 0.9rem;
-        gap: 12px;
-        justify-content: space-between;
-        margin-bottom: 10px;
-      }
-      .controls {
-        align-items: center;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      .toggle-check {
-        align-items: center;
-        color: var(--ink);
-        cursor: pointer;
-        display: inline-flex;
-        gap: 6px;
-      }
-      .toggle-check input { accent-color: var(--accent); cursor: pointer; height: 16px; width: 16px; }
-      ul { margin: 0; padding: 0; }
-      li {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        display: flex;
-        gap: 12px;
-        justify-content: space-between;
-        list-style: none;
-        margin: 8px 0;
-        padding: 12px;
-      }
-      .job-title { font-weight: 600; }
-      .job-meta { color: var(--muted); font-size: 0.9rem; }
-      .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-      .badge {
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        color: var(--muted);
-        font-size: 0.78rem;
-        padding: 1px 8px;
-      }
-      .badge.remote {
-        background: var(--accent-soft);
-        border-color: transparent;
-        color: var(--accent);
-        font-weight: 500;
-      }
-      button {
-        background: var(--accent);
-        border: 1px solid var(--accent);
-        border-radius: 6px;
-        color: #fff;
-        cursor: pointer;
-        font: inherit;
-        padding: 6px 14px;
-        white-space: nowrap;
-        align-self: flex-start;
-      }
-      button:hover:not(:disabled) { filter: brightness(1.1); }
-      button:disabled { cursor: wait; opacity: 0.7; }
-      button.saved {
-        background: var(--accent-soft);
-        border-color: var(--accent);
-        color: var(--accent);
-        font-weight: 600;
-      }
-      button.saved:hover:not(:disabled) {
-        background: var(--danger-soft);
-        border-color: var(--danger);
-        color: var(--danger);
-        filter: none;
-      }
-      button.remove, button.ghost {
-        background: transparent;
-        border-color: var(--line);
-        color: var(--danger);
-      }
-      button.ghost { font-size: 0.85rem; padding: 4px 10px; }
-      button.link-btn {
-        background: transparent;
-        border: none;
-        color: inherit;
-        font-weight: 600;
-        margin-left: 8px;
-        padding: 0;
-        text-decoration: underline;
-      }
-      button:focus-visible, input:focus-visible, select:focus-visible {
-        outline: 3px solid #f2a900;
-        outline-offset: 2px;
-      }
-      .empty { color: var(--muted); margin: 8px 0; }
-      #status {
-        align-items: center;
-        color: var(--accent);
-        display: flex;
-        flex-wrap: wrap;
-        min-height: 1.75em;
-        margin: 0 0 10px;
-      }
-      #status.error { color: var(--danger); }
-      .sr-only {
-        border: 0;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Jobs</h1>
-    <div id="status" role="status" aria-live="polite"></div>
-    <div class="layout">
-      <section aria-labelledby="jobs-heading">
-        <div class="section-head">
-          <h2 id="jobs-heading">Open roles</h2>
-          <span id="jobs-count" class="job-meta"></span>
-        </div>
-        <input id="search" type="search" placeholder="Search by title, company or place (e.g. remote developer)" aria-label="Search jobs" />
-        <div class="toolbar">
-          <div class="controls">
-            <label class="toggle-check">
-              <input id="remote-only" type="checkbox" />
-              <span>Remote only</span>
-            </label>
-          </div>
-          <label>
-            <span class="sr-only">Sort roles</span>
-            <select id="sort-by" aria-label="Sort roles">
-              <option value="default">Sort: Featured</option>
-              <option value="stipend-desc">Sort: Highest stipend</option>
-              <option value="stipend-asc">Sort: Lowest stipend</option>
-            </select>
+    }
+
+    input[type="search"],
+    select {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font: inherit;
+      padding: 8px 10px;
+    }
+
+    input[type="search"] {
+      font-size: 16px;
+      margin-bottom: 10px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .toolbar {
+      align-items: center;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .controls {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .toggle-check {
+      align-items: center;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .toggle-check input {
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 16px;
+      width: 16px;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      list-style: none;
+      margin: 8px 0;
+      padding: 12px;
+    }
+
+    .job-title {
+      font-weight: 600;
+    }
+
+    .job-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .badge {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 1px 8px;
+    }
+
+    .badge.remote {
+      background: var(--accent-soft);
+      border-color: transparent;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    button {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      padding: 6px 14px;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+
+    button:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.7;
+    }
+
+    button.saved {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    button.saved:hover:not(:disabled) {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: var(--danger);
+      filter: none;
+    }
+
+    button.remove,
+    button.ghost {
+      background: transparent;
+      border-color: var(--line);
+      color: var(--danger);
+    }
+
+    button.ghost {
+      font-size: 0.85rem;
+      padding: 4px 10px;
+    }
+
+    button.link-btn {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font-weight: 600;
+      margin-left: 8px;
+      padding: 0;
+      text-decoration: underline;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid #f2a900;
+      outline-offset: 2px;
+    }
+
+    .empty {
+      color: var(--muted);
+      margin: 8px 0;
+    }
+
+    #status {
+      align-items: center;
+      color: var(--accent);
+      display: flex;
+      flex-wrap: wrap;
+      min-height: 1.75em;
+      margin: 0 0 10px;
+    }
+
+    #status.error {
+      color: var(--danger);
+    }
+
+    .sr-only {
+      border: 0;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Jobs</h1>
+  <div id="status" role="status" aria-live="polite"></div>
+  <div class="layout">
+    <section aria-labelledby="jobs-heading">
+      <div class="section-head">
+        <h2 id="jobs-heading">Open roles</h2>
+        <span id="jobs-count" class="job-meta"></span>
+      </div>
+      <input id="search" type="search" placeholder="Search by title, company or place (e.g. Data Analyst Intern)"
+        aria-label="Search jobs" />
+      <div class="toolbar">
+        <div class="controls">
+          <label class="toggle-check">
+            <input id="remote-only" type="checkbox" />
+            <span>Remote only</span>
           </label>
         </div>
-        <ul id="jobs"></ul>
-        <p id="jobs-empty" class="empty" hidden>No jobs match your filters.</p>
-      </section>
-      <section id="saved-panel" aria-labelledby="saved-heading">
-        <div class="section-head">
-          <h2 id="saved-heading" tabindex="-1">Saved jobs (<span id="saved-count">0</span>)</h2>
-          <button id="clear-saved" type="button" class="ghost" hidden>Clear all</button>
-        </div>
-        <ul id="saved"></ul>
-        <p id="saved-empty" class="empty">Nothing saved yet. Press Save on a job to keep it here.</p>
-      </section>
-    </div>
-    <script type="module" src="/app.js"></script>
-  </body>
+        <label>
+          <span class="sr-only">Sort roles</span>
+          <select id="sort-by" aria-label="Sort roles">
+            <option value="default">Sort: Featured</option>
+            <option value="stipend-desc">Sort: Highest stipend</option>
+            <option value="stipend-asc">Sort: Lowest stipend</option>
+          </select>
+        </label>
+      </div>
+      <ul id="jobs"></ul>
+      <p id="jobs-empty" class="empty" hidden>No jobs match your filters.</p>
+    </section>
+    <section id="saved-panel" aria-labelledby="saved-heading">
+      <div class="section-head">
+        <h2 id="saved-heading" tabindex="-1">Saved jobs (<span id="saved-count">0</span>)</h2>
+        <button id="clear-saved" type="button" class="ghost" hidden>Clear all</button>
+      </div>
+      <ul id="saved"></ul>
+      <p id="saved-empty" class="empty">Nothing saved yet. Press Save on a job to keep it here.</p>
+    </section>
+  </div>
+  <script type="module" src="/app.js"></script>
+</body>
+
 </html>
