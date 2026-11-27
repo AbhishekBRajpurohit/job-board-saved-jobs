@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createApp } from "../server.js";
@@ -186,4 +186,16 @@ test("concurrent POST /api/saved requests do not lose saves", async (t) => {
   assert.ok(responses.every((r) => r.status === 201));
   const list = await (await fetch(`${app.base}/api/saved`)).json();
   assert.deepEqual(list.map((j) => j.id).sort(), ids);
+});
+
+test("a saved job that was removed from the board is hidden, and can still be un-saved", async (t) => {
+  const path = join(await mkdtemp(join(tmpdir(), "api-")), "saved.json");
+  await writeFile(path, JSON.stringify(["gone", "j1"])); // "gone" is not in jobs.json
+  const app = await start(path);
+  t.after(app.stop);
+  const list = await (await fetch(`${app.base}/api/saved`)).json();
+  assert.deepEqual(list.map((j) => j.id), ["j1"]);
+  const res = await fetch(`${app.base}/api/saved/gone`, { method: "DELETE" });
+  assert.equal(res.status, 204);
+  assert.deepEqual(JSON.parse(await readFile(path, "utf8")), ["j1"]);
 });
