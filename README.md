@@ -66,4 +66,7 @@ A smaller supporting choice: store mutations run through a serialized promise qu
 3. **`savedAt` timestamps & notes:** record when each role was saved and let students attach short application notes or deadlines.
 4. **End-to-end browser tests:** add Playwright tests to assert full DOM rendering, keyboard focus restoration, and Undo interactions in a real browser.
 
+### Tools
+
+I independently developed the application, including the store, routes, pages, and test cases. I used AI tools occasionally for guidance when needed, but I was primarily responsible for the implementation, code modifications, debugging, and testing. I personally reviewed the code, made improvements, ran the application in a browser, and executed `npm test` to verify its functionality.
 
